@@ -1,9 +1,8 @@
 //-- Import Class Objects
 const { classDSQLCluster } = require('./class.engine.js');
-const objectDSQLCluster = new classDSQLCluster();
-
 const { classManagement } = require('./class.mng.js');
 
+const objectDSQLCluster = new classDSQLCluster();
 const objectManagement = new classManagement();
 
 
@@ -15,7 +14,7 @@ var configData = JSON.parse(fs.readFileSync('./aws-exports.json'));
 // API Application Variables
 const express = require('express');
 const cors = require('cors')
-const uuid = require('uuid');
+
 
 const app = express();
 const port = configData.aws_api_port;
@@ -197,6 +196,32 @@ async function gatherStatsAuroraDSQLCluster(req, res) {
 
 
 
+//--## AWS : List Aurora DSQL Clusters
+app.get("/api/aws/aurora/dsql/clusters/list/", async (req,res)=>{
+   
+    // Token Validation
+    var cognitoToken = verifyTokenCognito(req.headers['x-token-cognito']);
+    
+    if (cognitoToken.isValid === false)
+        return res.status(511).send({ result : [], message : "Token is invalid"});
+
+    // API Call
+    var params = req.query
+
+    try {
+        var results = await objectDSQLCluster.getGlobalDSQLClusters(params);
+        res.status(200).send({ csrfToken: req.csrfToken(), results : results });
+        
+    } catch(error) {
+        console.log(error)
+                
+    }
+
+});
+
+
+
+
 //--#################################################################################################### 
 //   ---------------------------------------- AWS
 //--#################################################################################################### 
@@ -249,31 +274,6 @@ app.get("/api/aws/user/profile/update/", async (req,res)=>{
     }
 
 });
-
-
-//--## AWS : List Aurora DSQL Clusters
-app.get("/api/aws/aurora/dsql/clusters/list/", async (req,res)=>{
-   
-    // Token Validation
-    var cognitoToken = verifyTokenCognito(req.headers['x-token-cognito']);
-    
-    if (cognitoToken.isValid === false)
-        return res.status(511).send({ result : [], message : "Token is invalid"});
-
-    // API Call
-    var params = req.query
-
-    try {
-        var results = await objectDSQLCluster.getGlobalDSQLClusters(params);
-        res.status(200).send({ csrfToken: req.csrfToken(), results : results });
-        
-    } catch(error) {
-        console.log(error)
-                
-    }
-
-});
-
 
 
 
