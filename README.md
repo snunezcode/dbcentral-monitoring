@@ -276,16 +276,16 @@ Follow these step-by-step instructions to configure and deploy the DBCentral Mon
 
 ### IAM Role Deployment
 
-If the monitoring process needs to be performed across multiple AWS accounts (which is the most common scenario), you will need to deploy a cross-account IAM role to access those accounts. This will allow the role to be accessible across all the accounts that are part of the MAP project.
+If the monitoring process needs to be performed across multiple AWS accounts (which is the most common scenario), you will need to deploy a cross-account IAM role to access those accounts.
 
 - ### Using AWS CLI 
 
 This approach will create this role using AWS CLI on your target account to be monitored.
 
 Note : Update <YOUR-CENTRAL-DEPLOYMENT-ACCOUNT> with your central account where application was deployed.
-
+```
 aws iam create-role --role-name IAMRoleDBCentralSolution --assume-role-policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"AWS":"arn:aws:iam::<YOUR-CENTRAL-DEPLOYMENT-ACCOUNT>:role/role-ec2-aws-showtime-labs"},"Action":"sts:AssumeRole"}]}' && aws iam put-role-policy --role-name IAMRoleDBCentralSolution --policy-name policy-dbcentral --policy-document '{"Version":"2012-10-17","Statement":[{"Sid":"VisualEditor0","Effect":"Allow","Action":["dsql:ListClusters","dsql:ListTagsForResource","dsql:GetCluster","cloudwatch:GetMetricData"],"Resource":"*"}]}'
-
+```
 
 
 
