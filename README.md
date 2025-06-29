@@ -278,7 +278,7 @@ Follow these step-by-step instructions to configure and deploy the DBCentral Mon
 
 If the monitoring process needs to be performed across multiple AWS accounts (which is the most common scenario), you will need to deploy a cross-account IAM role to access those accounts.
 
-- ### Using AWS CLI 
+- ##### Using AWS CLI 
 
 This approach will create this role using AWS CLI on your target account to be monitored.
 
@@ -289,7 +289,7 @@ aws iam create-role --role-name IAMRoleDBCentralSolution --assume-role-policy-do
 
 
 
-- ### Using Cloudformation template
+- ##### Using Cloudformation template
 
 This approach will deploy this role as an AWS CloudFormation StackSet from your management account.
 
