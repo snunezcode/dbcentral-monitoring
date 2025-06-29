@@ -29,7 +29,17 @@ class classManagement {
         try {
 
             var profiles = JSON.parse(fs.readFileSync('./profiles.json'));
-            return profiles[config.userId];
+            if (profiles.hasOwnProperty(config.userId)) {
+                return profiles[config.userId];
+            }
+            else{
+                return {
+                    accounts: [],
+                    regions: []     
+                  };
+            }
+
+            
 
         }
         catch(err){
@@ -47,11 +57,16 @@ class classManagement {
     async updateProfile(config){
            
         try {
-            var profiles = JSON.parse(fs.readFileSync('./profiles.json'));
-            profiles[config.userId] = config['profile'];
+            
+            var profiles = {};
+            if (fs.existsSync('./profiles.json')) {
+                profiles = JSON.parse(fs.readFileSync('./profiles.json'));            
+            }
+            
+            profiles[config.userId] = config['profile'];            
+            
             fs.writeFileSync('./profiles.json',JSON.stringify(profiles, null, 4));            
             return profiles[config.userId];
-
         }
         catch(err){
             this.#objLog.write("updateProfile","err",err);                

@@ -19,10 +19,13 @@ export default function App() {
     const [visibleModal, setVisibleModal] = useState(false);
     
     const [templateJson,setTemplateJson] = useState({
-      accounts: [],
-      regions: []     
+                        accounts: [],
+                        regions: []     
     });
-    var  templateJsonCurrent = useRef({});
+    var  templateJsonCurrent = useRef({
+                        accounts: [],
+                        regions: []     
+    });
 
 
     const i18nStrings = {
@@ -113,14 +116,23 @@ export default function App() {
           params: params
           }).then((data)=>{                   
               
-            templateJsonCurrent.current = data.data.result;
+              templateJsonCurrent.current = data.data.result;
+              console.log(data.data.result);
               setTemplateJson(data.data.result);     
 
               
           })
           .catch((err) => {
                 console.log('Timeout API Call : /api/aws/user/profile/get/' );
-                console.log(err);                
+                console.log(err);    
+                templateJsonCurrent.current = {
+                  accounts: [],
+                  regions: []     
+                };  
+                setTemplateJson({
+                  accounts: [],
+                  regions: []     
+                });
           });          
   
     }
@@ -137,9 +149,8 @@ export default function App() {
   
       await Axios.get(`${configuration["apps-settings"]["api_url"]}/api/aws/user/profile/update/`,{
           params: params
-          }).then((data)=>{                   
+          }).then((data)=>{                                 
               
-              console.log(data.data.result);  
               setTemplateJson(data.data.result); 
               setVisibleModal(false);           
               
