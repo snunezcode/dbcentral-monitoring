@@ -1,0 +1,11 @@
+{
+    "demo@example.com": {
+        "accounts": [
+            "000000000000000"
+        ],
+        "regions": [
+            "us-east-x",
+            "us-east-y"
+        ]
+    }
+}
