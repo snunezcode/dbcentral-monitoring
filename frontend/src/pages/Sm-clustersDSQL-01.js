@@ -2,7 +2,7 @@ import {useState, useEffect, useRef} from 'react'
 import { createSearchParams } from "react-router-dom";
 import Axios from 'axios';
 import { configuration, SideMainLayoutHeader,SideMainLayoutMenu, breadCrumbs } from './Configs';
-import { createLabelFunction, customFormatNumberLong, customFormatNumber } from '../components/Functions';
+import { createLabelFunction, customFormatNumberLong, customFormatNumber, customFormatNumberInteger } from '../components/Functions';
 
 import CustomHeader from "../components/HeaderApp";
 import AppLayout from "@cloudscape-design/components/app-layout";
@@ -62,9 +62,9 @@ function Dashboard() {
                   {id: 'account',header: 'Account',cell: item => item.account,ariaLabel: createLabelFunction('account'),sortingField: 'account',},
                   {id: 'clusterRegion',header: 'Region',cell: item => item.clusterRegion,ariaLabel: createLabelFunction('clusterRegion'),sortingField: 'clusterRegion',},                  
                   {id: 'peerRegion',header: 'Peer Region',cell: item => item.peerRegion,ariaLabel: createLabelFunction('peerRegion'),sortingField: 'peerRegion',},
-                  {id: 'totalDPU',header: 'TotalDPUs',cell: item => customFormatNumberLong(item.totalDPU || 0, 0),ariaLabel: createLabelFunction('totalDPU'),sortingField: 'totalDPU',},                  
-                  {id: 'transactions',header: 'Transactions',cell: item => customFormatNumberLong(item.transactions || 0, 0),ariaLabel: createLabelFunction('transactions'),sortingField: 'transactions',},                  
-                  {id: 'commitLatency',header: 'CommitLatency(ms)',cell: item => customFormatNumberLong(item.commitLatency || 0, 0),ariaLabel: createLabelFunction('commitLatency'),sortingField: 'commitLatency',},                                    
+                  {id: 'totalDPU',header: 'TotalDPUs',cell: item => customFormatNumberInteger(item.totalDPU || 0, 0),ariaLabel: createLabelFunction('totalDPU'),sortingField: 'totalDPU',},                  
+                  {id: 'transactions',header: 'Transactions',cell: item => customFormatNumberInteger(item.transactions || 0, 0),ariaLabel: createLabelFunction('transactions'),sortingField: 'transactions',},                  
+                  {id: 'commitLatency',header: 'CommitLatency(ms)',cell: item => customFormatNumberInteger(item.commitLatency || 0, 0),ariaLabel: createLabelFunction('commitLatency'),sortingField: 'commitLatency',},                                    
                   {id: 'witnessRegion',header: 'Witness Region',cell: item => item.witnessRegion,ariaLabel: createLabelFunction('witnessRegion'),sortingField: 'witnessRegion',},
                   {id: 'endPoint',header: 'Endpoint',cell: item => <CopyToClipboard copyButtonAriaLabel="Copy Endpoint" copyErrorText="Endpoint failed to copy"  copySuccessText="Endpoint copied" textToCopy={item.endPoint}  variant="inline"  />,ariaLabel: createLabelFunction('endPoint'),sortingField: 'endPoint',},
                   {id: 'creationTime',header: 'CreationTime',cell: item => item.creationTime,ariaLabel: createLabelFunction('creationTime'),sortingField: 'creationTime',}
@@ -350,7 +350,7 @@ function Dashboard() {
                                                         label: 'Transactions',
                                                         value: (
                                                           <Link fontSize="heading-xl" variant="secondary" >
-                                                            { customFormatNumberLong(globalStats['summary']?.['TotalTransactions']  || 0, 0) }
+                                                            { customFormatNumberInteger(globalStats['summary']?.['TotalTransactions']  || 0, 0) }
                                                           </Link>
                                                         ),
                                                       },
@@ -358,7 +358,7 @@ function Dashboard() {
                                                         label: 'DPUs',
                                                         value: (
                                                           <Link fontSize="heading-xl" variant="secondary" >
-                                                            { customFormatNumberLong(globalStats['summary']?.['TotalDPU']  || 0,0) }
+                                                            { customFormatNumberInteger(globalStats['summary']?.['TotalDPU']  || 0,0) }
                                                           </Link>
                                                         ),
                                                       },

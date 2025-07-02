@@ -49,8 +49,8 @@ class classManagement {
               };
           }
     
-          const item = unmarshall(response.Item);
-          return item.profile;
+          const item = unmarshall(response.Item);          
+          return item.profile;          
 
         } catch (err) {
             this.#objLog.write("getProfile","err",err);

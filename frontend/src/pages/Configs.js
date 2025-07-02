@@ -3,9 +3,9 @@ export const configuration =
 {
     "apps-settings": {
         "refresh-interval": 10*1000,        
-        "refresh-interval-dsql-dashboard": 10*1000,
+        "refresh-interval-dsql-dashboard": 20*1000,
         "api_url": "",
-        "release" : "0.1.3",
+        "release" : "0.1.2.0.1",
         "release-enforcement" : false,
         "application-title": "DBCentral Monitoring",
         "version-code-url" : "https://version.code.ds.wwcs.aws.dev/",

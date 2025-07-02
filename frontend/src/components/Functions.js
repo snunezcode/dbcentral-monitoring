@@ -77,6 +77,7 @@ export function customFormatNumberShort(value,decimalLength) {
         return value.toLocaleString('en-US', {minimumFractionDigits:decimalLength, maximumFractionDigits:decimalLength}); 
 
     }
+
     
 
     export function customFormatNumberInteger(value) {

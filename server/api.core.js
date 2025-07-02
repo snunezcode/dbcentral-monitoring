@@ -56,11 +56,6 @@ gatherPemKeys(issCognitoIdp);
 //--#################################################################################################### 
 
 
-//-- Generate new standard token
-function generateToken(tokenData){
-    const token = jwt.sign(tokenData, secretKey, { expiresIn: 60 * 60 * configData.aws_token_expiration });
-    return token ;
-};
 
 
 //-- Verify standard token

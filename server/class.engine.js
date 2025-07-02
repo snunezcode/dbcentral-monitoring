@@ -1,9 +1,11 @@
 
-const fs = require('fs');
 const { classLogging } = require('./class.logging.js');
-
 const { classAWS } = require('./class.aws.js');
 const AWSObject = new classAWS();
+
+
+const { classManagement } = require('./class.mng.js');
+const ManagementObject = new classManagement();
 
 
 
@@ -35,7 +37,7 @@ class classDSQLCluster {
         //-- Constructor method
         constructor(object) { 
         
-                
+            this.jitterCollection = 2;        
         
         }
 
@@ -64,31 +66,38 @@ class classDSQLCluster {
                 
             try {      
                 
+                const endTime = new Date();
+                endTime.setMinutes(endTime.getMinutes() - this.jitterCollection ); // Adjust 2 minututes for CloudWatch delayed refresh
+                const startTime = new Date(endTime - ( 30 * 60000)); // config.period in minutes
+
 
                 var config = { "accounts" : ["000000000000"], "regions" : ["us-east-x"]};
-                
+                var profiles = { "accounts" : ["000000000000"], "regions" : ["us-east-x"]};
                 //-- Gather metadata
                 try {      
-                    var profiles = JSON.parse(fs.readFileSync('./profiles.json'));
+                    
+                    profiles = await ManagementObject.getProfile({ userId : parameters.userId });
+
                     config = { 
-                                    accounts : profiles[parameters.userId]?.['accounts'],
-                                    regions : profiles[parameters.userId]?.['regions'],
+                                    accounts : profiles['accounts'],
+                                    regions : profiles['regions'],
                     };
                 }
                 catch(err){
                     this.#objLog.write("getGlobalDSQLClusters","err",err);                 
-                }
-        
-             
+                }        
+                     
                 var resources = await AWSObject.getGlobalDSQLClustersMultiAccount(config);
                                 
                 //-- Gather metrics
                 config = { 
-                    accounts: profiles[parameters.userId]?.['accounts'],
-                    regions: profiles[parameters.userId]?.['regions'],
+                    accounts : profiles['accounts'],
+                    regions : profiles['regions'],
                     IAMRoleName: "IAMRoleDBCentralSolution",
                     period: 60, 
                     interval: 30,
+                    startTime : startTime,
+                    endTime : endTime,
                     queries: [
                       {
                         id: "TotalTransactions",
@@ -157,7 +166,7 @@ class classDSQLCluster {
 
                 var metrics = [];
                 const endTime = new Date();
-                endTime.setMinutes(endTime.getMinutes() - 2); // Adjust 2 minututes for CloudWatch delayed refresh
+                endTime.setMinutes(endTime.getMinutes() - this.jitterCollection ); // Adjust 2 minututes for CloudWatch delayed refresh
                 const startTime = new Date(endTime - (parseInt(parameters.period) * 60000)); // config.period in minutes
 
                 for (const cluster of parameters['clusters']) {                              

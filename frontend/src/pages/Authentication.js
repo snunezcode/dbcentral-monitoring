@@ -31,13 +31,12 @@ export default function Auth({children}) {
     function Header() {      
         return (
           <div>
-              <Flex justifyContent="center">            
-                
-                <Heading level={2}>
-                  <Icon
+              <Flex justifyContent="center" alignContent="center"   alignItems="center">            
+              <Icon
                     name="lock-private"
                     size="large"              
-                  />
+                />                
+                <Heading level={3}>                  
                   {configuration['apps-settings']['application-title']}                    
                 </Heading>           
                 
@@ -53,7 +52,9 @@ export default function Auth({children}) {
       
         return (
           <Flex justifyContent="center" padding={tokens.space.medium}>
-            <Text></Text>
+             <Heading level={6}>                  
+                  Version: {configuration['apps-settings']['release']}                    
+              </Heading> 
           </Flex>
         );
     }

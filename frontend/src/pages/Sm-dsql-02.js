@@ -1,5 +1,5 @@
 //-- React Events
-import { useState,useEffect } from 'react';
+import { useState,useEffect, useRef } from 'react';
 import Axios from 'axios'
 import { useSearchParams } from 'react-router-dom';
 
@@ -12,6 +12,7 @@ import Header from "@cloudscape-design/components/header";
 import Box from "@cloudscape-design/components/box";
 import SpaceBetween from "@cloudscape-design/components/space-between";
 import Icon from "@cloudscape-design/components/icon";
+import { SplitPanel } from '@cloudscape-design/components';
 
 
 //-- Custom Objects
@@ -27,6 +28,21 @@ import { configuration } from './Configs';
 
 
 var CryptoJS = require("crypto-js");
+
+export const splitPanelI18nStrings: SplitPanelProps.I18nStrings = {
+    preferencesTitle: 'Split panel preferences',
+    preferencesPositionLabel: 'Split panel position',
+    preferencesPositionDescription: 'Choose the default split panel position for the service.',
+    preferencesPositionSide: 'Side',
+    preferencesPositionBottom: 'Bottom',
+    preferencesConfirm: 'Confirm',
+    preferencesCancel: 'Cancel',
+    closeButtonAriaLabel: 'Close panel',
+    openButtonAriaLabel: 'Open panel',
+    resizeHandleAriaLabel: 'Resize split panel',
+  };
+
+  
 
 export default function App() {
     
@@ -55,8 +71,14 @@ export default function App() {
     
     //-- Variable for Split Panels
     const [splitPanelShow,setsplitPanelShow] = useState(false);
+    const [splitPanelSize, setSplitPanelSize] = useState(350);
   
-   
+    //--## Metric comparation
+    var currentMetricId = useRef("TotalDPU");
+
+    const [metricDetailRefresh,setMetricDetailRefresh] = useState("");
+
+
     
     //-- clusterStats
     const [clusterStats,setClusterStats] = useState({
@@ -180,6 +202,15 @@ export default function App() {
       
     }
     
+
+    //--######## Show metric details
+    function onClickMetric(metricId) {
+        currentMetricId.current = metricId;
+        setMetricDetailRefresh(new Date().getSeconds());
+        setsplitPanelShow(true);       
+                   
+    }
+    
     
     
     
@@ -208,7 +239,90 @@ export default function App() {
         navigationHide={true}
         splitPanelOpen={splitPanelShow}
         onSplitPanelToggle={() => setsplitPanelShow(false)}
-        splitPanelSize={250}
+        onSplitPanelResize={
+                    ({ detail: { size } }) => {
+                    setSplitPanelSize(size);
+                }
+        }
+        splitPanelSize={splitPanelSize}
+        splitPanel={
+            <SplitPanel  
+                header={
+                
+                    <Header
+                            variant="h3"
+                            
+                            
+                          >
+                           {"Metric : " + currentMetricId.current }
+                          </Header>
+                  
+                } 
+                i18nStrings={splitPanelI18nStrings} closeBehavior="hide"
+                onSplitPanelToggle={({ detail }) => {
+                               //console.log(detail);
+                              }
+                            }
+            >
+                
+                { splitPanelShow === true &&
+                    
+                    <table style={{"width":"100%", "padding": "1em"}}>
+                        <tr>
+                            <td valign="top" style={{"width":"15%", "textAlign": "center"}}>  
+                                    <div>
+                                        <Box color="text-status-inactive" variant="h3">{parameter_object_values['clusterRegion']}</Box>
+                                    </div>
+                                    <Box variant="awsui-key-label">Region</Box>
+                                    <br/>
+                                    <br/>
+                                    <Metric01 
+                                        value={clusterStats['metrics'][0][currentMetricId.current]['lastValue']  || 0 }
+                                        title={currentMetricId.current}
+                                        precision={1}
+                                        format={4}
+                                        fontColorValue={configuration.colors.fonts.metric100}
+                                        fontSizeValue={"30px"}
+                                    />     
+                            </td>
+
+                            <td valign="top" style={{"width":"70%", "padding-left": "1em"}}>  
+                                    <ChartLine01 series={JSON.stringify([
+                                                            { name : parameter_object_values['clusterRegion'], data : clusterStats['metrics'][0][currentMetricId.current]['history'] || [] },
+                                                            { name : parameter_object_values['peerRegion'], data : clusterStats['metrics'][0][currentMetricId.current]['history'] || [] },
+                                                        ])}
+                                                    title={""} height="220px"
+                                                    stacked={true}
+                                    />
+                            </td>
+                            <td valign="top" style={{"width":"15%", "textAlign": "center"}}>  
+                                
+                                    <div>
+                                        <Box color="text-status-inactive" variant="h3">{parameter_object_values['peerRegion']}</Box>
+                                    </div>
+                                    <Box variant="awsui-key-label">Region</Box>
+                                    <br/>
+                                    <br/>
+                                    <Metric01 
+                                        value={clusterStats['metrics'][1][currentMetricId.current]['lastValue']  || 0 }
+                                        title={currentMetricId.current}
+                                        precision={1}
+                                        format={4}
+                                        fontColorValue={configuration.colors.fonts.metric100}
+                                        fontSizeValue={"30px"}
+                                    />     
+                            </td>
+                            
+                        </tr>
+                    </table>
+                     
+                    }
+
+                
+                                            
+                  
+            </SplitPanel>
+        }
         content={
             <>
                   <table style={{"width":"100%"}}>
@@ -281,44 +395,53 @@ export default function App() {
                                             <table style={{"width":"100%"}}>
                                             <tr>                                                                        
                                                 <td valign="center" style={{"width":"25%", "text-align" : "left", "border-left": "2px solid " + configuration.colors.lines.separator100, "padding-left": "1em"  }}>  
-                                                    <Metric01 
-                                                        value={clusterStats['metrics'][0]['ComputeDPU']['lastValue']  || 0 }
-                                                        title={"ComputeDPU"}
-                                                        precision={1}
-                                                        format={3}
-                                                        fontColorValue={configuration.colors.fonts.metric100}
-                                                        fontSizeValue={"20px"}
-                                                    />                                                
+                                                    <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('ComputeDPU')}>                                                                                
+                                                        <Metric01 
+                                                            value={clusterStats['metrics'][0]['ComputeDPU']['lastValue']  || 0 }
+                                                            title={"ComputeDPU"}
+                                                            precision={1}
+                                                            format={3}
+                                                            fontColorValue={configuration.colors.fonts.metric100}
+                                                            fontSizeValue={"20px"}
+                                                        />                                                
+                                                    </a>
                                                 </td>                                            
                                                 <td valign="center" style={{"width":"25%", "text-align" : "left", "border-left": "2px solid " + configuration.colors.lines.separator100, "padding-left": "1em"  }}>  
-                                                    <Metric01 
-                                                        value={clusterStats['metrics'][0]['ReadDPU']['lastValue']  || 0 }
-                                                        title={"ReadDPU"}
-                                                        precision={1}
-                                                        format={3}
-                                                        fontColorValue={configuration.colors.fonts.metric100}
-                                                        fontSizeValue={"20px"}
-                                                    />                                                
+                                                    <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('ReadDPU')}>                                                                                
+                                                        <Metric01 
+                                                            value={clusterStats['metrics'][0]['ReadDPU']['lastValue']  || 0 }
+                                                            title={"ReadDPU"}
+                                                            precision={1}
+                                                            format={3}
+                                                            fontColorValue={configuration.colors.fonts.metric100}
+                                                            fontSizeValue={"20px"}
+                                                        />    
+                                                    </a>                                            
+                                                    
                                                 </td>  
                                                 <td valign="center" style={{"width":"25%", "text-align" : "left", "border-left": "2px solid " + configuration.colors.lines.separator100, "padding-left": "1em"  }}>  
-                                                    <Metric01 
-                                                        value={clusterStats['metrics'][0]['WriteDPU']['lastValue']  || 0 }
-                                                        title={"WriteDPU"}
-                                                        precision={1}
-                                                        format={3}
-                                                        fontColorValue={configuration.colors.fonts.metric100}
-                                                        fontSizeValue={"20px"}
-                                                    />                                                
+                                                    <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('WriteDPU')}>                                                                                
+                                                        <Metric01 
+                                                            value={clusterStats['metrics'][0]['WriteDPU']['lastValue']  || 0 }
+                                                            title={"WriteDPU"}
+                                                            precision={1}
+                                                            format={3}
+                                                            fontColorValue={configuration.colors.fonts.metric100}
+                                                            fontSizeValue={"20px"}
+                                                        />    
+                                                    </a>                                            
                                                 </td>  
                                                 <td valign="center" style={{"width":"25%", "text-align" : "left", "border-left": "2px solid " + configuration.colors.lines.separator100, "padding-left": "1em"  }}>  
-                                                    <Metric01 
-                                                        value={clusterStats['metrics'][0]['MultiRegionWriteDPU']['lastValue']  || 0 }
-                                                        title={"MultiRegionWriteDPU"}
-                                                        precision={1}
-                                                        format={3}
-                                                        fontColorValue={configuration.colors.fonts.metric100}
-                                                        fontSizeValue={"20px"}
-                                                    />                                                
+                                                    <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('MultiRegionWriteDPU')}>                                                                                
+                                                        <Metric01 
+                                                            value={clusterStats['metrics'][0]['MultiRegionWriteDPU']['lastValue']  || 0 }
+                                                            title={"MultiRegionWriteDPU"}
+                                                            precision={1}
+                                                            format={3}
+                                                            fontColorValue={configuration.colors.fonts.metric100}
+                                                            fontSizeValue={"20px"}
+                                                        />  
+                                                    </a>                                              
                                                 </td>  
                                             </tr>
                                         </table>
@@ -338,15 +461,17 @@ export default function App() {
                                                         />
                                                     </td>           
                                                     <td valign="center" style={{"width":"20%", "text-align" : "center" }}>  
-                                                        <Metric01 
-                                                            value={clusterStats['metrics'][0]['TotalDPU']['lastValue']  || 0 }
-                                                            title={"TotalDPU"}
-                                                            precision={1}
-                                                            format={3}
-                                                            fontColorValue={configuration.colors.fonts.metric100}
-                                                            fontSizeValue={"30px"}
-                                                        />                                                              
+                                                        <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('TotalDPU')}>                                                                                
+                                                            <Metric01 
+                                                                value={clusterStats['metrics'][0]['TotalDPU']['lastValue']  || 0 }
+                                                                title={"TotalDPU"}
+                                                                precision={1}
+                                                                format={3}
+                                                                fontColorValue={configuration.colors.fonts.metric100}
+                                                                fontSizeValue={"30px"}
+                                                            />                                                              
                                                                                           
+                                                        </a>                                      
                                                     </td>                                                    
                                                 </tr>
                                             </table>                                            
@@ -364,28 +489,30 @@ export default function App() {
                                             <table style={{"width":"100%"}}>
                                                 <tr>                                                                        
                                                     <td valign="center" style={{"width":"25%", "text-align" : "left", "border-left": "2px solid " + configuration.colors.lines.separator100, "padding-left": "1em"  }}>  
-                                                        <Metric01 
-                                                            value={clusterStats['metrics'][0]['ReadOnlyTransactions']['lastValue']  || 0 }
-                                                            title={"ReadOnlyTransactions/Minute"}
-                                                            precision={1}
-                                                            format={3}
-                                                            fontColorValue={configuration.colors.fonts.metric100}
-                                                            fontSizeValue={"20px"}
-                                                        />                                                
+                                                        <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('ReadOnlyTransactions')}>
+                                                            <Metric01 
+                                                                value={clusterStats['metrics'][0]['ReadOnlyTransactions']['lastValue']  || 0 }
+                                                                title={"ReadOnlyTransactions/Minute"}
+                                                                precision={1}
+                                                                format={3}
+                                                                fontColorValue={configuration.colors.fonts.metric100}
+                                                                fontSizeValue={"20px"}
+                                                            />     
+                                                        </a>                                           
                                                     </td>                                            
-                                                    <td valign="center" style={{"width":"25%", "text-align" : "left", "border-left": "2px solid " + configuration.colors.lines.separator100, "padding-left": "1em"  }}>  
-                                                        <Metric01 
-                                                            value={clusterStats['metrics'][0]['ReadOnlyTransactions']['lastValue'] / 60  || 0 }
-                                                            title={"ReadOnlyTransactions/Second"}
-                                                            precision={1}
-                                                            format={3}
-                                                            fontColorValue={configuration.colors.fonts.metric100}
-                                                            fontSizeValue={"20px"}
-                                                        />                                                
+                                                    <td valign="center" style={{"width":"25%", "text-align" : "left", "border-left": "2px solid " + configuration.colors.lines.separator100, "padding-left": "1em"  }}>                                                          
+                                                            <Metric01 
+                                                                value={clusterStats['metrics'][0]['ReadOnlyTransactions']['lastValue'] / 60  || 0 }
+                                                                title={"ReadOnlyTransactions/Second"}
+                                                                precision={1}
+                                                                format={3}
+                                                                fontColorValue={configuration.colors.fonts.metric100}
+                                                                fontSizeValue={"20px"}
+                                                            />                                                
                                                     </td>  
-                                                    <td valign="center" style={{"width":"25%", "text-align" : "left", "border-left": "2px solid " + configuration.colors.lines.separator100, "padding-left": "1em"  }}>  
+                                                    <td valign="center" style={{"width":"25%", "text-align" : "left", "border-left": "2px solid " + configuration.colors.lines.separator100, "padding-left": "1em"  }}>                                                          
                                                         <Metric01 
-                                                            value={clusterStats['metrics'][0]['TotalTransactions']['lastValue']/60  || 0 }
+                                                            value={clusterStats['metrics'][0]['TotalTransactions']['lastValue'] /60  || 0 }
                                                             title={"TotalTransactions/Second"}
                                                             precision={1}
                                                             format={3}
@@ -393,7 +520,8 @@ export default function App() {
                                                             fontSizeValue={"20px"}
                                                         />                                                
                                                     </td>  
-                                                    <td valign="center" style={{"width":"25%", "text-align" : "left", "border-left": "2px solid " + configuration.colors.lines.separator100, "padding-left": "1em"  }}>  
+                                                    <td valign="center" style={{"width":"25%", "text-align" : "left", "border-left": "2px solid " + configuration.colors.lines.separator100, "padding-left": "1em"  }}>                                                          
+                                                        <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('OccConflicts')}>
                                                             <Metric01 
                                                                 value={clusterStats['metrics'][0]['OccConflicts']['lastValue']  || 0 }
                                                                 title={"OccConflicts/Minute"}
@@ -401,9 +529,8 @@ export default function App() {
                                                                 format={3}
                                                                 fontColorValue={configuration.colors.fonts.metric100}
                                                                 fontSizeValue={"20px"}
-                                                            />   
-                                                                       
-
+                                                            />     
+                                                        </a>                                                                     
                                                     </td>  
                                                 </tr>
                                             </table>
@@ -419,14 +546,16 @@ export default function App() {
                                                             />
                                                     </td>                     
                                                     <td valign="center" style={{"width":"20%", "text-align" : "center" }}>  
-                                                        <Metric01 
-                                                            value={clusterStats['metrics'][0]['TotalTransactions']['lastValue']  || 0 }
-                                                            title={"TotalTransactions/Minute"}
-                                                            precision={1}
-                                                            format={3}
-                                                            fontColorValue={configuration.colors.fonts.metric100}
-                                                            fontSizeValue={"30px"}
-                                                        />                                                
+                                                        <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('TotalTransactions')}>
+                                                            <Metric01 
+                                                                value={clusterStats['metrics'][0]['TotalTransactions']['lastValue']  || 0 }
+                                                                title={"TotalTransactions/Minute"}
+                                                                precision={1}
+                                                                format={3}
+                                                                fontColorValue={configuration.colors.fonts.metric100}
+                                                                fontSizeValue={"30px"}
+                                                            />                                                
+                                                        </a> 
                                                     </td>
                                                     
                                                 </tr>
@@ -451,15 +580,17 @@ export default function App() {
                                                                             title={"CommitLatency(ms)"} height="220px" 
                                                             />
                                                     </td>                         
-                                                    <td valign="center" style={{"width":"20%", "text-align" : "center" }}>  
-                                                        <Metric01 
-                                                            value={ clusterStats['metrics'][0]['CommitLatency']['lastValue']  || 0  }
-                                                            title={"CommitLatency(ms)"}
-                                                            precision={0}
-                                                            format={3}
-                                                            fontColorValue={configuration.colors.fonts.metric100}
-                                                            fontSizeValue={"30px"}
-                                                        />                                                
+                                                    <td valign="center" style={{"width":"20%", "text-align" : "center" }}>
+                                                        <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('CommitLatency')}>  
+                                                            <Metric01 
+                                                                value={ clusterStats['metrics'][0]['CommitLatency']['lastValue']  || 0  }
+                                                                title={"CommitLatency(ms)"}
+                                                                precision={0}
+                                                                format={3}
+                                                                fontColorValue={configuration.colors.fonts.metric100}
+                                                                fontSizeValue={"30px"}
+                                                            />                                                
+                                                        </a>
                                                     </td>
                                                     
                                                 </tr>
@@ -478,34 +609,40 @@ export default function App() {
                                             <table style={{"width":"100%"}}>
                                                 <tr>   
                                                     <td valign="center" style={{"width":"25%", "text-align" : "left", "border-left": "2px solid " + configuration.colors.lines.separator100, "padding-left": "1em"  }}>  
-                                                        <Metric01 
-                                                            value={clusterStats['metrics'][0]['ClusterStorageSize']['lastValue']  || 0 }
-                                                            title={"ClusterStorageSize"}
-                                                            precision={1}
-                                                            format={2}
-                                                            fontColorValue={configuration.colors.fonts.metric100}
-                                                            fontSizeValue={"20px"}
-                                                        />                                                
+                                                        <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('ClusterStorageSize')}>  
+                                                            <Metric01 
+                                                                value={clusterStats['metrics'][0]['ClusterStorageSize']['lastValue']  || 0 }
+                                                                title={"ClusterStorageSize"}
+                                                                precision={1}
+                                                                format={2}
+                                                                fontColorValue={configuration.colors.fonts.metric100}
+                                                                fontSizeValue={"20px"}
+                                                            />              
+                                                        </a>                                  
                                                     </td>                           
                                                     <td valign="center" style={{"width":"25%", "text-align" : "left", "border-left": "2px solid " + configuration.colors.lines.separator100, "padding-left": "1em"  }}>  
-                                                        <Metric01 
-                                                            value={clusterStats['metrics'][0]['BytesRead']['lastValue']  || 0 }
-                                                            title={"BytesRead"}
-                                                            precision={1}
-                                                            format={2}
-                                                            fontColorValue={configuration.colors.fonts.metric100}
-                                                            fontSizeValue={"20px"}
-                                                        />                                                
+                                                        <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('BytesRead')}>  
+                                                            <Metric01 
+                                                                value={clusterStats['metrics'][0]['BytesRead']['lastValue']  || 0 }
+                                                                title={"BytesRead"}
+                                                                precision={1}
+                                                                format={2}
+                                                                fontColorValue={configuration.colors.fonts.metric100}
+                                                                fontSizeValue={"20px"}
+                                                            />           
+                                                        </a>                                     
                                                     </td>                                            
                                                     <td valign="center" style={{"width":"25%", "text-align" : "left", "border-left": "2px solid " + configuration.colors.lines.separator100, "padding-left": "1em"  }}>  
-                                                        <Metric01 
-                                                            value={clusterStats['metrics'][0]['BytesWritten']['lastValue']  || 0 }
-                                                            title={"BytesWritten"}
-                                                            precision={1}
-                                                            format={2}
-                                                            fontColorValue={configuration.colors.fonts.metric100}
-                                                            fontSizeValue={"20px"}
-                                                        />                                                
+                                                        <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('BytesWritten')}>    
+                                                            <Metric01 
+                                                                value={clusterStats['metrics'][0]['BytesWritten']['lastValue']  || 0 }
+                                                                title={"BytesWritten"}
+                                                                precision={1}
+                                                                format={2}
+                                                                fontColorValue={configuration.colors.fonts.metric100}
+                                                                fontSizeValue={"20px"}
+                                                            />     
+                                                        </a>                                           
                                                     </td>                                              
                                                     <td valign="center" style={{"width":"25%", "text-align" : "left",   }}>  
                                                                                                    
@@ -526,15 +663,15 @@ export default function App() {
                                                                         stacked={true}
                                                         />
                                                     </td>
-                                                    <td valign="center" style={{"width":"20%", "text-align" : "center" }}>  
-                                                        <Metric01 
-                                                            value={ (clusterStats['metrics'][0]['BytesRead']['lastValue']  || 0 ) + (clusterStats['metrics'][0]['BytesWritten']['lastValue']  || 0 ) }
-                                                            title={"Bytes/sec"}
-                                                            precision={1}
-                                                            format={2}
-                                                            fontColorValue={configuration.colors.fonts.metric100}
-                                                            fontSizeValue={"30px"}
-                                                        />                                                
+                                                    <td valign="center" style={{"width":"20%", "text-align" : "center" }}>                                                          
+                                                            <Metric01 
+                                                                value={ (clusterStats['metrics'][0]['BytesRead']['lastValue']  || 0 ) + (clusterStats['metrics'][0]['BytesWritten']['lastValue']  || 0 ) }
+                                                                title={"Bytes/sec"}
+                                                                precision={1}
+                                                                format={2}
+                                                                fontColorValue={configuration.colors.fonts.metric100}
+                                                                fontSizeValue={"30px"}
+                                                            />                                                                                                        
                                                     </td>                                                    
                                                 </tr>
                                             </table>                                            
@@ -542,30 +679,33 @@ export default function App() {
 
                           </td>
                           <td valign="middle" style={{"width":"10%", "text-align" : "center", "padding-left": "1em", "padding-right": "1em"}}>  
-                                
-                                <Metric01 
-                                    value={clusterStats['metrics'][0]['MultiRegionWriteDPU']['lastValue']  || 0 }
-                                    title={"MultiRegionWriteDPU"}
-                                    precision={0}
-                                    format={3}
-                                    fontColorValue={configuration.colors.fonts.metric100}
-                                    fontSizeValue={"30px"}
-                                />  
+                                <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('MultiRegionWriteDPU')}>    
+                                    <Metric01 
+                                        value={clusterStats['metrics'][0]['MultiRegionWriteDPU']['lastValue']  || 0 }
+                                        title={"MultiRegionWriteDPU"}
+                                        precision={0}
+                                        format={3}
+                                        fontColorValue={configuration.colors.fonts.metric100}
+                                        fontSizeValue={"30px"}
+                                    />  
+                                </a>
                                 <Icon name="arrow-right" />                                                              
                                 <Animation01 speed="3s" height = "30px" width = "150px" />
                                 <br/>
                                 <br/>
                                 <br/>     
                                 <br/>     
-                                <br/>                                     
-                                <Metric01 
-                                    value={clusterStats['metrics'][1]['MultiRegionWriteDPU']['lastValue']  || 0 }
-                                    title={"MultiRegionWriteDPU"}
-                                    precision={0}
-                                    format={3}
-                                    fontColorValue={configuration.colors.fonts.metric100}
-                                    fontSizeValue={"30px"}
-                                />        
+                                <br/>         
+                                <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('MultiRegionWriteDPU')}>                                
+                                    <Metric01 
+                                        value={clusterStats['metrics'][1]['MultiRegionWriteDPU']['lastValue']  || 0 }
+                                        title={"MultiRegionWriteDPU"}
+                                        precision={0}
+                                        format={3}
+                                        fontColorValue={configuration.colors.fonts.metric100}
+                                        fontSizeValue={"30px"}
+                                    />        
+                                </a>
                                 <Icon name="arrow-left" />                                                   
                                 <Animation01 speed="3s" rotate="180deg" height = "30px" width = "150px" />
                                 <br/>
@@ -602,47 +742,58 @@ export default function App() {
                                         }
                                         footer={
                                             <table style={{"width":"100%"}}>
-                                                <tr>                                                                        
+                                                <tr>    
                                                     <td valign="center" style={{"width":"25%", "text-align" : "right", "border-right": "2px solid " + configuration.colors.lines.separator100, "padding-right": "1em"  }}>  
-                                                        <Metric01 
-                                                            value={clusterStats['metrics'][1]['ComputeDPU']['lastValue']  || 0 }
-                                                            title={"ComputeDPU"}
-                                                            precision={1}
-                                                            format={3}
-                                                            fontColorValue={configuration.colors.fonts.metric100}
-                                                            fontSizeValue={"20px"}
-                                                        />                                                
-                                                    </td>                                            
+                                                        <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('MultiRegionWriteDPU')}>                                
+                                                            <Metric01 
+                                                                value={clusterStats['metrics'][1]['MultiRegionWriteDPU']['lastValue']  || 0 }
+                                                                title={"MultiRegionWriteDPU"}
+                                                                precision={1}
+                                                                format={3}
+                                                                fontColorValue={configuration.colors.fonts.metric100}
+                                                                fontSizeValue={"20px"}
+                                                            />   
+                                                        </a>                                             
+                                                    </td> 
                                                     <td valign="center" style={{"width":"25%", "text-align" : "right", "border-right": "2px solid " + configuration.colors.lines.separator100, "padding-right": "1em"  }}>  
-                                                        <Metric01 
-                                                            value={clusterStats['metrics'][1]['ReadDPU']['lastValue']  || 0 }
-                                                            title={"ReadDPU"}
-                                                            precision={1}
-                                                            format={3}
-                                                            fontColorValue={configuration.colors.fonts.metric100}
-                                                            fontSizeValue={"20px"}
-                                                        />                                                
+                                                        <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('WriteDPU')}>                                
+                                                            <Metric01 
+                                                                value={clusterStats['metrics'][1]['WriteDPU']['lastValue']  || 0 }
+                                                                title={"WriteDPU"}
+                                                                precision={1}
+                                                                format={3}
+                                                                fontColorValue={configuration.colors.fonts.metric100}
+                                                                fontSizeValue={"20px"}
+                                                            />                                                
+                                                        </a>
+                                                    </td>                                                                                                                                                                    
+                                                    <td valign="center" style={{"width":"25%", "text-align" : "right", "border-right": "2px solid " + configuration.colors.lines.separator100, "padding-right": "1em"  }}>  
+                                                        <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('ReadDPU')}>                                
+                                                            <Metric01 
+                                                                value={clusterStats['metrics'][1]['ReadDPU']['lastValue']  || 0 }
+                                                                title={"ReadDPU"}
+                                                                precision={1}
+                                                                format={3}
+                                                                fontColorValue={configuration.colors.fonts.metric100}
+                                                                fontSizeValue={"20px"}
+                                                            />                                                
+                                                        </a>
                                                     </td>  
                                                     <td valign="center" style={{"width":"25%", "text-align" : "right", "border-right": "2px solid " + configuration.colors.lines.separator100, "padding-right": "1em"  }}>  
-                                                        <Metric01 
-                                                            value={clusterStats['metrics'][1]['WriteDPU']['lastValue']  || 0 }
-                                                            title={"WriteDPU"}
-                                                            precision={1}
-                                                            format={3}
-                                                            fontColorValue={configuration.colors.fonts.metric100}
-                                                            fontSizeValue={"20px"}
-                                                        />                                                
-                                                    </td>  
-                                                    <td valign="center" style={{"width":"25%", "text-align" : "right", "border-right": "2px solid " + configuration.colors.lines.separator100, "padding-right": "1em"  }}>  
-                                                        <Metric01 
-                                                            value={clusterStats['metrics'][1]['MultiRegionWriteDPU']['lastValue']  || 0 }
-                                                            title={"MultiRegionWriteDPU"}
-                                                            precision={1}
-                                                            format={3}
-                                                            fontColorValue={configuration.colors.fonts.metric100}
-                                                            fontSizeValue={"20px"}
-                                                        />                                                
-                                                    </td>  
+                                                        <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('ComputeDPU')}>                                
+                                                            <Metric01 
+                                                                value={clusterStats['metrics'][1]['ComputeDPU']['lastValue']  || 0 }
+                                                                title={"ComputeDPU"}
+                                                                precision={1}
+                                                                format={3}
+                                                                fontColorValue={configuration.colors.fonts.metric100}
+                                                                fontSizeValue={"20px"}
+                                                            />                                                
+                                                        </a>
+                                                    </td>   
+                                                    
+                                                    
+                                                    
                                                 </tr>
                                             </table>
                                         }
@@ -651,15 +802,16 @@ export default function App() {
                                                 <tr>                 
                                                              
                                                     <td valign="center" style={{"width":"20%", "text-align" : "center" }}>  
-                                                        
-                                                        <Metric01 
-                                                            value={clusterStats['metrics'][1]['TotalDPU']['lastValue']  || 0 }
-                                                            title={"TotalDPU"}
-                                                            precision={1}
-                                                            format={3}
-                                                            fontColorValue={configuration.colors.fonts.metric100}
-                                                            fontSizeValue={"30px"}
-                                                        />                                                                                   
+                                                        <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('TotalDPU')}>                                
+                                                            <Metric01 
+                                                                value={clusterStats['metrics'][1]['TotalDPU']['lastValue']  || 0 }
+                                                                title={"TotalDPU"}
+                                                                precision={1}
+                                                                format={3}
+                                                                fontColorValue={configuration.colors.fonts.metric100}
+                                                                fontSizeValue={"30px"}
+                                                            />                                                                                   
+                                                        </a>
                                                     </td>
                                                     <td valign="top" style={{"width":"80%"}}>  
                                                         <ChartLine01 series={JSON.stringify([
@@ -685,6 +837,7 @@ export default function App() {
                                             <table style={{"width":"100%"}}>
                                                 <tr>  
                                                     <td valign="center" style={{"width":"25%", "text-align" : "right", "border-right": "2px solid " + configuration.colors.lines.separator100, "padding-right": "1em"  }}>  
+                                                        <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('OccConflicts')}>                                
                                                             <Metric01 
                                                                 value={clusterStats['metrics'][1]['OccConflicts']['lastValue']  || 0 }
                                                                 title={"OccConflicts/Minute"}
@@ -693,53 +846,58 @@ export default function App() {
                                                                 fontColorValue={configuration.colors.fonts.metric100}
                                                                 fontSizeValue={"20px"}
                                                             />   
-                                                                                                  
+                                                        </a>    
                                                     </td>                                                                      
                                                     <td valign="center" style={{"width":"25%", "text-align" : "right", "border-right": "2px solid " + configuration.colors.lines.separator100, "padding-right": "1em"  }}>  
-                                                        <Metric01 
-                                                            value={clusterStats['metrics'][1]['ReadOnlyTransactions']['lastValue']  || 0 }
-                                                            title={"ReadOnlyTransactions/Minute"}
-                                                            precision={1}
-                                                            format={3}
-                                                            fontColorValue={configuration.colors.fonts.metric100}
-                                                            fontSizeValue={"20px"}
-                                                        />                                                
-                                                    </td>                                            
+                                                            <Metric01 
+                                                                value={clusterStats['metrics'][1]['TotalTransactions']['lastValue'] / 60  || 0 }
+                                                                title={"TotalTransactions/Second"}
+                                                                precision={1}
+                                                                format={3}
+                                                                fontColorValue={configuration.colors.fonts.metric100}
+                                                                fontSizeValue={"20px"}
+                                                            />                                                               
+                                                    </td>                                                                                             
                                                     <td valign="center" style={{"width":"25%", "text-align" : "right", "border-right": "2px solid " + configuration.colors.lines.separator100, "padding-right": "1em"  }}>  
-                                                        <Metric01 
-                                                            value={clusterStats['metrics'][1]['ReadOnlyTransactions']['lastValue'] / 60  || 0 }
-                                                            title={"ReadOnlyTransactions/Second"}
-                                                            precision={1}
-                                                            format={3}
-                                                            fontColorValue={configuration.colors.fonts.metric100}
-                                                            fontSizeValue={"20px"}
-                                                        />                                                
-                                                    </td>  
+                                                            <Metric01 
+                                                                value={clusterStats['metrics'][1]['ReadOnlyTransactions']['lastValue'] / 60  || 0 }
+                                                                title={"ReadOnlyTransactions/Second"}
+                                                                precision={1}
+                                                                format={3}
+                                                                fontColorValue={configuration.colors.fonts.metric100}
+                                                                fontSizeValue={"20px"}
+                                                            />                                                          
+                                                    </td>                                                                                                            
                                                     <td valign="center" style={{"width":"25%", "text-align" : "right", "border-right": "2px solid " + configuration.colors.lines.separator100, "padding-right": "1em"  }}>  
-                                                        <Metric01 
-                                                            value={clusterStats['metrics'][1]['TotalTransactions']['lastValue']/60  || 0 }
-                                                            title={"TotalTransactions/Second"}
-                                                            precision={1}
-                                                            format={3}
-                                                            fontColorValue={configuration.colors.fonts.metric100}
-                                                            fontSizeValue={"20px"}
-                                                        />                                                
-                                                    </td>                                                        
+                                                        <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('ReadOnlyTransactions')}>                                
+                                                            <Metric01 
+                                                                value={clusterStats['metrics'][1]['ReadOnlyTransactions']['lastValue']  || 0 }
+                                                                title={"ReadOnlyTransactions/Minute"}
+                                                                precision={1}
+                                                                format={3}
+                                                                fontColorValue={configuration.colors.fonts.metric100}
+                                                                fontSizeValue={"20px"}
+                                                            />  
+                                                        </a>                                                  
+                                                </td>     
                                                 </tr>
+                                                
                                             </table>
                                         }
                                     >
                                             <table style={{"width":"100%"}}>
                                                 <tr>       
                                                     <td valign="center" style={{"width":"20%", "text-align" : "center" }}>  
-                                                        <Metric01 
-                                                            value={clusterStats['metrics'][1]['TotalTransactions']['lastValue']  || 0 }
-                                                            title={"TotalTransactions/Minute"}
-                                                            precision={1}
-                                                            format={3}
-                                                            fontColorValue={configuration.colors.fonts.metric100}
-                                                            fontSizeValue={"30px"}
-                                                        />                                                
+                                                        <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('TotalTransactions')}>                                
+                                                            <Metric01 
+                                                                value={clusterStats['metrics'][1]['TotalTransactions']['lastValue']  || 0 }
+                                                                title={"TotalTransactions/Minute"}
+                                                                precision={1}
+                                                                format={3}
+                                                                fontColorValue={configuration.colors.fonts.metric100}
+                                                                fontSizeValue={"30px"}
+                                                            />                                                
+                                                        </a>    
                                                     </td>
                                                     <td valign="top" style={{"width":"80%"}}>  
                                                             <ChartBar01 series={JSON.stringify([
@@ -761,14 +919,16 @@ export default function App() {
                                             <table style={{"width":"100%"}}>
                                                 <tr>   
                                                     <td valign="center" style={{"width":"20%", "text-align" : "center" }}>  
-                                                        <Metric01 
-                                                            value={ clusterStats['metrics'][1]['CommitLatency']['lastValue']  || 0  }
-                                                            title={"CommitLatency(ms)"}
-                                                            precision={0}
-                                                            format={3}
-                                                            fontColorValue={configuration.colors.fonts.metric100}
-                                                            fontSizeValue={"30px"}
-                                                        />                                                
+                                                        <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('CommitLatency')}>                                
+                                                            <Metric01 
+                                                                value={ clusterStats['metrics'][1]['CommitLatency']['lastValue']  || 0  }
+                                                                title={"CommitLatency(ms)"}
+                                                                precision={0}
+                                                                format={3}
+                                                                fontColorValue={configuration.colors.fonts.metric100}
+                                                                fontSizeValue={"30px"}
+                                                            />    
+                                                        </a>                                            
                                                     </td>
                                                     <td valign="top" style={{"width":"80%"}}>  
                                                             <ChartBar01 series={JSON.stringify([
@@ -792,34 +952,40 @@ export default function App() {
                                                                                                    
                                                     </td>  
                                                     <td valign="center" style={{"width":"25%", "text-align" : "right", "border-right": "2px solid " + configuration.colors.lines.separator100, "padding-right": "1em"  }}>  
-                                                        <Metric01 
-                                                            value={clusterStats['metrics'][1]['ClusterStorageSize']['lastValue']  || 0 }
-                                                            title={"ClusterStorageSize"}
-                                                            precision={1}
-                                                            format={2}
-                                                            fontColorValue={configuration.colors.fonts.metric100}
-                                                            fontSizeValue={"20px"}
-                                                        />                                                
+                                                        <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('ClusterStorageSize')}>                                
+                                                            <Metric01 
+                                                                value={clusterStats['metrics'][1]['ClusterStorageSize']['lastValue']  || 0 }
+                                                                title={"ClusterStorageSize"}
+                                                                precision={1}
+                                                                format={2}
+                                                                fontColorValue={configuration.colors.fonts.metric100}
+                                                                fontSizeValue={"20px"}
+                                                            />                                                
+                                                        </a>
                                                     </td>                           
                                                     <td valign="center" style={{"width":"25%", "text-align" : "right", "border-right": "2px solid " + configuration.colors.lines.separator100, "padding-right": "1em"  }}>  
-                                                        <Metric01 
-                                                            value={clusterStats['metrics'][1]['BytesRead']['lastValue']  || 0 }
-                                                            title={"BytesRead"}
-                                                            precision={1}
-                                                            format={2}
-                                                            fontColorValue={configuration.colors.fonts.metric100}
-                                                            fontSizeValue={"20px"}
-                                                        />                                                
+                                                        <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('BytesRead')}>                                
+                                                            <Metric01 
+                                                                value={clusterStats['metrics'][1]['BytesRead']['lastValue']  || 0 }
+                                                                title={"BytesRead"}
+                                                                precision={1}
+                                                                format={2}
+                                                                fontColorValue={configuration.colors.fonts.metric100}
+                                                                fontSizeValue={"20px"}
+                                                            />                                                
+                                                        </a>
                                                     </td>                                            
                                                     <td valign="center" style={{"width":"25%", "text-align" : "right", "border-right": "2px solid " + configuration.colors.lines.separator100, "padding-right": "1em"  }}>  
-                                                        <Metric01 
-                                                            value={clusterStats['metrics'][1]['BytesWritten']['lastValue']  || 0 }
-                                                            title={"BytesWritten"}
-                                                            precision={1}
-                                                            format={2}
-                                                            fontColorValue={configuration.colors.fonts.metric100}
-                                                            fontSizeValue={"20px"}
-                                                        />                                                
+                                                        <a href='#;' style={{ "text-decoration" : "none", "color": "inherit" }}  onClick={() => onClickMetric('BytesWritten')}>                                
+                                                            <Metric01 
+                                                                value={clusterStats['metrics'][1]['BytesWritten']['lastValue']  || 0 }
+                                                                title={"BytesWritten"}
+                                                                precision={1}
+                                                                format={2}
+                                                                fontColorValue={configuration.colors.fonts.metric100}
+                                                                fontSizeValue={"20px"}
+                                                            />                                                
+                                                        </a>
                                                     </td>                                                                                                  
                                                     
                                                 </tr>

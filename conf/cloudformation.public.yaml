@@ -333,7 +333,6 @@ Resources:
                 
 
                 - echo --## Creating configuration files                   
-                - aws dynamodb put-item --table-name tblDBCentralProfiles --item '{"userId": {"S": "$APP_USER"}, "profile": {"M": {"accounts": {"L": [{"S": "$AWS_ACCOUNT_ID"}]},"regions": {"L": [{"S": "us-east-1"}, {"S": "us-west-2"}, {"S": "us-east-2"} ]}}}}'
                
                 - |
                   cat << EOF > frontend/public/aws-exports.json

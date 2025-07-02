@@ -28,6 +28,7 @@ class classAWS {
             this.maxConcurrency = maxConcurrency;
             this.logger = logger;
             this.IAMRoleName  = "IAMRoleDBCentralSolution";
+            this.jitterCollection = 2;
     }
 
     
@@ -97,6 +98,8 @@ class classAWS {
                     endTime.setMinutes(endTime.getMinutes() - 2); // Adjust 2 minututes for CloudWatch delayed refresh
                     const startTime = new Date(endTime - (parseInt(config.period) * 60000)); // config.period in minutes
                     */
+                   
+                    console.log(config);
                     const endTime = config.endTime;                    
                     const startTime = config.startTime;
                     const intervalMinutes = parseInt(config.interval);
@@ -270,10 +273,14 @@ class classAWS {
                         "Period": params.period
                     }
                 ];
-                  
+                
+                
                 const endTime = new Date();
-                endTime.setMinutes(endTime.getMinutes() - 2);
-                const startTime = new Date(endTime - (params.interval * 60000));
+                endTime.setMinutes(endTime.getMinutes() - this.jitterCollection);
+                const startTime = new Date(endTime - (params.interval * 60000));                
+                
+
+                
                 const queryClw = {
                     MetricDataQueries: dataQueries,
                     "StartTime": startTime,
@@ -375,7 +382,7 @@ class classAWS {
                     metricId: params.metricId
                 };
             } catch (err) {
-                this.logger.error(`Error in getMetricData for account \${params.account}, region \${params.region}:`, err);
+                this.logger.error(`Error in getMetricData for account ${params.account}, region ${params.region}:`, err);
                 return {
                     results: [],
                     account: params.account,
@@ -463,6 +470,8 @@ class classAWS {
                                         IAMRoleName: params.IAMRoleName,
                                         period: params.period,
                                         interval: params.interval,
+                                        startTime: params.startTime,
+                                        endTime: params.endTime,
                                         sql: query.sql,
                                         metricId: query.id
                                       }));
