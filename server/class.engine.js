@@ -145,7 +145,7 @@ class classDSQLCluster {
 
                 resources = sortArrayByIdAsc(resources);
 
-                return { resources : resources , summary : metrics['summary'], history : metrics['history'] };
+                return { resources : resources , summary : metrics['summary'], history : metrics['history'], lastTimestamp : (endTime.toLocaleTimeString('en-US', {hour12: false,hour: '2-digit',minute: '2-digit', second: '2-digit' })) };
                 
             }
             catch(err){

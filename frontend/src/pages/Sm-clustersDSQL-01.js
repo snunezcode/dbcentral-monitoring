@@ -50,16 +50,18 @@ function Dashboard() {
     //-- Variable for Split Panels
     const [splitPanelShow,setsplitPanelShow] = useState(false);
     const [selectedItems,setSelectedItems] = useState([{ identifier: "" }]);
+
     
     var accountId = useRef("");
     var regionId = useRef("");
+    var currentSelectedItem = useRef(null);
    
     //-- Variables Table
     const columnsTable = [
                   {id: 'name',header: 'Tag: Name',cell: item => item.name,ariaLabel: createLabelFunction('name'),sortingField: 'name',},
                   {id: 'identifier',header: 'Cluster ID',cell: item => item.identifier,ariaLabel: createLabelFunction('identifier'),sortingField: 'identifier',},
                   {id: 'status',header: 'Status',cell: item => ( <> <StatusIndicator type={item.status === 'active' ? 'success' : 'pending'}> {item.status} </StatusIndicator> </> ),ariaLabel: createLabelFunction('Status'),sortingField: 'status',},
-                  {id: 'account',header: 'Account',cell: item => item.account,ariaLabel: createLabelFunction('account'),sortingField: 'account',},
+                  {id: 'account',header: 'Account',cell: item => /*"12345567890"*/ item.account,ariaLabel: createLabelFunction('account'),sortingField: 'account',},
                   {id: 'clusterRegion',header: 'Region',cell: item => item.clusterRegion,ariaLabel: createLabelFunction('clusterRegion'),sortingField: 'clusterRegion',},                  
                   {id: 'peerRegion',header: 'Peer Region',cell: item => item.peerRegion,ariaLabel: createLabelFunction('peerRegion'),sortingField: 'peerRegion',},
                   {id: 'totalDPU',header: 'TotalDPUs',cell: item => customFormatNumberInteger(item.totalDPU || 0, 0),ariaLabel: createLabelFunction('totalDPU'),sortingField: 'totalDPU',},                  
@@ -82,7 +84,8 @@ function Dashboard() {
                                                     TotalTransactions : [],
                                                     TotalCommitLatency : [],
                                                     TotalDPU : []
-                                                  }
+                                                  },
+                                                  lastTimestamp : "-"
 
     });
 
@@ -135,12 +138,16 @@ function Dashboard() {
                 params: params
                 }).then((data)=>{             
                                 
+                    console.log(data);
                       var resources = data['data']?.['results']?.['resources'];                
                       setGlobalStats(data['data']?.['results']);                
                       if (resources.length > 0 ) {
                         accountId.current = resources[0]?.['account'];
-                        regionId.current = resources[0]?.['clusterRegion'];
-                        setSelectedItems([resources[0]]);
+                        regionId.current = resources[0]?.['clusterRegion'];                        
+                        if ( currentSelectedItem.current == null ){                                                    
+                          currentSelectedItem.current = [resources[0]];
+                          setSelectedItems([resources[0]]);
+                        }                        
                         setsplitPanelShow(true);
                       }  
                     
@@ -256,19 +263,28 @@ function Dashboard() {
             contentType="table"
             content={
                 
-                    <div style={{"padding" : "1em"}}>                       
-                        <div style={{"paddingLeft" : "1em", "paddingBottom" : ".3em" }}>
-                            <BreadcrumbGroup
-                                  items={[
-                                    { text: "Aurora DSQL", href: "#" },                                
-                                    {
-                                      text: "Clusters",
-                                      href: "#"
-                                    }
-                                  ]}
-                                  ariaLabel="Breadcrumbs"
-                            />
-                        </div>                         
+                    <div style={{"padding" : "1em"}}>      
+                        <table style={{"width":"100%"}}>
+                            <tr>                
+                                <td style={{"width":"50%", "textAlign" : "left",   }}>                   
+                                    <div style={{"paddingLeft" : "1em", "paddingBottom" : ".3em" }}>
+                                        <BreadcrumbGroup
+                                              items={[
+                                                { text: "Aurora DSQL", href: "#" },                                
+                                                {
+                                                  text: "Clusters",
+                                                  href: "#"
+                                                }
+                                              ]}
+                                              ariaLabel="Breadcrumbs"
+                                        />
+                                     </div>                         
+                                  </td>                
+                                  <td style={{"width":"50%", "textAlign" : "right",   }}>                                                                
+                                        <Button iconName="refresh" onClick={() => {gatherClusters();}}>{globalStats['lastTimestamp']}</Button>                                                                                                                                   
+                                  </td>  
+                              </tr>                
+                          </table>                
                         <table style={{"width":"100%"}}>
                                   <tr>                
                                       <td valign="top" style={{"width":"40%", "textAlign" : "center",  "paddingRight" : ".5em" }}>  
@@ -280,7 +296,6 @@ function Dashboard() {
                                                             direction="horizontal"
                                                             size="xs"
                                                           >                                                                
-                                                            <Button iconName="refresh" onClick={() => {gatherClusters();}}></Button>                                                                                    
                                                           </SpaceBetween>                                                      
                                                         }
                                                     >
@@ -332,8 +347,7 @@ function Dashboard() {
                                                               <SpaceBetween
                                                                 direction="horizontal"
                                                                 size="xs"
-                                                              >                                                                
-                                                                <Button iconName="refresh" onClick={() => {gatherClusters();}}></Button>                                                                                    
+                                                              >                                                               
                                                               </SpaceBetween>
                                                           
                                                         }
@@ -427,6 +441,7 @@ function Dashboard() {
                               onSelectionItem={( item ) => {                                                                                               
                                           accountId.current = item[0]?.['account'];
                                           regionId.current = item[0]?.['clusterRegion'];
+                                          currentSelectedItem.current = item;
                                           setSelectedItems(item);
                                           setsplitPanelShow(true);
                                   }
@@ -435,8 +450,7 @@ function Dashboard() {
                                 <SpaceBetween
                                   direction="horizontal"
                                   size="xs"
-                                >
-                                  <Button variant="primary" disabled={selectedItems[0].identifier === "" ? true : false} onClick={() => { handleClickLogin(); }}>Connect</Button>      
+                                >                                 
                                   <Button iconName="refresh" onClick={() => {gatherClusters();}}></Button>                                                                                    
                                 </SpaceBetween>
                                 
