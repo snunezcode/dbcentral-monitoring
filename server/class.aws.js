@@ -97,9 +97,8 @@ class classAWS {
                     const endTime = new Date();
                     endTime.setMinutes(endTime.getMinutes() - 2); // Adjust 2 minututes for CloudWatch delayed refresh
                     const startTime = new Date(endTime - (parseInt(config.period) * 60000)); // config.period in minutes
-                    */
-                   
-                    console.log(config);
+                    */                   
+                    
                     const endTime = config.endTime;                    
                     const startTime = config.startTime;
                     const intervalMinutes = parseInt(config.interval);
@@ -203,10 +202,16 @@ class classAWS {
                                         return [timestamp, value];
                                   });
                                   
-                                  // Find the last non-zero value and timestamp
+                                  // Find the last non-zero value and timestamp                                  
                                   let lastValue = 0;
                                   let lastTimestamp = "";
                                   
+                                  if ( updatedHistory.length > 0) {                                        
+                                      lastValue = updatedHistory[updatedHistory.length - 1][1];
+                                      lastTimestamp = updatedHistory[updatedHistory.length - 1][0];
+                                  }                                  
+
+                                  /*                                  
                                   for (let i = updatedHistory.length - 1; i >= 0; i--) {
                                         if (updatedHistory[i][1] !== 0) {
                                           lastValue = updatedHistory[i][1];
@@ -214,6 +219,8 @@ class classAWS {
                                           break;
                                         }
                                   }
+                                  */
+
                                   
                                   // If all values are zero, use the last timestamp anyway
                                   if (lastTimestamp === "" && updatedHistory.length > 0) {                                        

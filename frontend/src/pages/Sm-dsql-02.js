@@ -144,6 +144,7 @@ export default function App() {
                 }).then((data)=>{             
                                 
                     setClusterStats(data.data);
+                    console.log(data.data);
                     
                 })
                 .catch((err) => {

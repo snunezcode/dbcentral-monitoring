@@ -189,7 +189,9 @@ Resources:
                   - Effect: "Allow"
                     Action:
                       - "sns:publish"
-                    Resource: "*"
+                    Resource: 
+                      - !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:*"
+
 
 #######################|-
 #######################|-  CodeBuild Resources
@@ -573,7 +575,7 @@ Resources:
       Type: "AWS::IAM::Role"
       Properties:
           Path: "/"
-          RoleName: !Join [ "-", ["IAMRoleDBCentralSolutionOrigin", !Ref AWS::AccountId , !Select [3, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+          RoleName: "IAMRoleDBCentralSolutionOrigin"
           AssumeRolePolicyDocument: !Sub |
                     {
                         "Version": "2012-10-17",
@@ -592,16 +594,7 @@ Resources:
             PolicyDocument: !Sub |              
                 {
                     "Version": "2012-10-17",
-                    "Statement": [
-                        {
-                            "Effect": "Allow",
-                            "Action": [
-                                "logs:GetLogEvents"
-                            ],
-                            "Resource": [
-                                "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:RDSOSMetrics:log-stream:*"
-                            ]
-                        },
+                    "Statement": [                      
                         {
                             "Effect": "Allow",
                             "Action": [
@@ -609,6 +602,11 @@ Resources:
                               "dynamodb:PutItem"
                             ],
                             "Resource": "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/tblDBCentralProfiles"
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": "sts:AssumeRole",
+                            "Resource": "*"
                         }
                     ]
                 }
@@ -708,6 +706,63 @@ Resources:
             SampledRequestsEnabled: true
             CloudWatchMetricsEnabled: true
             MetricName: 'AllowIPv6Rule'
+        - Name: "AWS-AWSManagedRulesKnownBadInputsRuleSet"
+          Priority: 2
+          OverrideAction: 
+              None: {}
+          Statement: 
+              ManagedRuleGroupStatement: 
+                  VendorName: "AWS"
+                  Name: "AWSManagedRulesKnownBadInputsRuleSet"
+                  RuleActionOverrides: 
+                    - 
+                      Name: "JavaDeserializationRCE_BODY"
+                      ActionToUse: 
+                          Block: {}
+                    - 
+                      Name: "JavaDeserializationRCE_URIPATH"
+                      ActionToUse: 
+                          Block: {}
+                    - 
+                      Name: "JavaDeserializationRCE_QUERYSTRING"
+                      ActionToUse: 
+                          Block: {}
+                    - 
+                      Name: "JavaDeserializationRCE_HEADER"
+                      ActionToUse: 
+                          Block: {}
+                    - 
+                      Name: "Host_localhost_HEADER"
+                      ActionToUse: 
+                          Block: {}
+                    - 
+                      Name: "PROPFIND_METHOD"
+                      ActionToUse: 
+                          Block: {}
+                    - 
+                      Name: "ExploitablePaths_URIPATH"
+                      ActionToUse: 
+                          Block: {}
+                    - 
+                      Name: "Log4JRCE_QUERYSTRING"
+                      ActionToUse: 
+                          Block: {}
+                    - 
+                      Name: "Log4JRCE_BODY"
+                      ActionToUse: 
+                          Block: {}
+                    - 
+                      Name: "Log4JRCE_URIPATH"
+                      ActionToUse: 
+                          Block: {}
+                    - 
+                      Name: "Log4JRCE_HEADER"
+                      ActionToUse: 
+                          Block: {}
+          VisibilityConfig: 
+              SampledRequestsEnabled: true
+              CloudWatchMetricsEnabled: true
+              MetricName: "AWS-AWSManagedRulesKnownBadInputsRuleSet"
 
   IPv4IPSet:
     Type: 'AWS::WAFv2::IPSet'
