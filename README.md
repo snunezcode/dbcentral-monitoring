@@ -35,6 +35,20 @@ Break down monitoring silos with our single-pane view of databases spanning mult
 Monitor your entire database fleet regardless of AWS account boundaries. Gain comprehensive visibility across development, testing, and production environments in one unified interface, eliminating blind spots and providing complete organizational database awareness.
 
 
+## How looks like ?
+
+
+#### Home
+<img width="1089" alt="image" src="img/im001.png">
+#### Dashboard - Amazon Aurora DSQL
+<img width="1089" alt="image" src="img/im002.png">
+#### Cross Region Dashboard - Amazon Aurora DSQL
+<img width="1089" alt="image" src="img/im003.png">
+#### Cross Region Dashboard - Metric comparation - Amazon Aurora DSQL
+<img width="1089" alt="image" src="img/im004.png">
+
+
+
 
 ## Architecture and Deployment Options
 
@@ -58,16 +72,12 @@ Key Components:
 
 3.	Authentication
     - Amazon Cognito provides secure user authentication
-    - API Gateway integrates with Cognito for authorization
+    - API calls integrated with Cognito for authorization
     - User sessions are securely managed through Cognito tokens
 
-
 4.	Backend Services
-    - API Gateway manages and routes API requests
-    - Lambda functions perform business logic and data processing
-    - Lambda loads required Python libraries from an S3 Bucket
-    - Aurora DSQL database stores application metadata and configuration
-
+    - NodeJS API Service manages and routes API requests
+    
 5.	Cross-Account Access
     - IAM Roles enable secure cross-account access
     - Solution can manage resources across multiple AWS accounts
@@ -102,14 +112,11 @@ Key Components:
 
 3.	Authentication
     - Amazon Cognito provides secure user authentication
-    - API Gateway integrates with Cognito for authorization
+    - API calls integrated with Cognito for authorization
     - User sessions are securely managed through Cognito tokens
 
 4.	Backend Services
-    - API Gateway manages and routes API requests
-    - Lambda functions perform business logic and data processing
-    - Lambda loads required Python libraries from an S3 Bucket
-    - Aurora DSQL database stores application metadata and configuration
+    - NodeJS API Service manages and routes API requests
 
 5.	Cross-Account Access
     - IAM Roles enable secure cross-account access
@@ -126,14 +133,6 @@ Key Components:
 
 
 
-## How looks like ?
-
-
-<img width="1089" alt="image" src="img/im001.png">
-<img width="1089" alt="image" src="img/im002.png">
-<img width="1089" alt="image" src="img/im003.png">
-<img width="1089" alt="image" src="img/im004.png">
-
  
 
 ## Solution Deployment
@@ -143,7 +142,7 @@ Key Components:
 ### Public method access version
 
 
-Follow these step-by-step instructions to configure and deploy the DBCentral Monitoring Solution Frontend into your AWS account using CloudFormation.
+Follow these step-by-step instructions to configure and deploy the DBCentral Monitoring Solution into your AWS account using CloudFormation.
 
 1. Download clodformation template ([cloudformation.public.yaml](https://raw.githubusercontent.com/aws-samples/sample-dbcentral-monitoring-solution/refs/heads/main/cloudformation.public.yaml))
     
@@ -167,7 +166,7 @@ Follow these step-by-step instructions to configure and deploy the DBCentral Mon
     - Click "Next"
 
 6. Specify Stack Details
-    - Enter a meaningful name for the stack in the "Stack name" field (e.g., "tagger-solution-frontend")
+    - Enter a meaningful name for the stack in the "Stack name" field (e.g., "dbcentral-solution")
 
 
 7. Configure General Configuration Parameters
@@ -205,7 +204,7 @@ Follow these step-by-step instructions to configure and deploy the DBCentral Mon
 ### Private method access version
 
 
-Follow these step-by-step instructions to configure and deploy the DBCentral Monitoring Solution Frontend into your AWS account using CloudFormation.
+Follow these step-by-step instructions to configure and deploy the DBCentral Monitoring Solution into your AWS account using CloudFormation.
 
 
 1. Download clodformation template ([cloudformation.private.yaml](https://raw.githubusercontent.com/aws-samples/sample-dbcentral-monitoring-solution/refs/heads/main/cloudformation.private.yaml))
@@ -231,7 +230,7 @@ Follow these step-by-step instructions to configure and deploy the DBCentral Mon
     - Click "Next"
 
 6. Specify Stack Details
-    - Enter a meaningful name for the stack in the "Stack name" field (e.g., "tagger-solution-frontend")
+    - Enter a meaningful name for the stack in the "Stack name" field (e.g., "dbcentral-solution")
 
 7. Configure General Configuration Parameters
     - GitHubRepositoryUrl: Enter the HTTPS URL for your GitHub repository where the DBCentral Monitoring Solution code is stored
@@ -274,9 +273,31 @@ Follow these step-by-step instructions to configure and deploy the DBCentral Mon
 
 
 
-### IAM Role Deployment
+## IAM Role Deployment
 
 If the monitoring process needs to be performed across multiple AWS accounts (which is the most common scenario), you will need to deploy a cross-account IAM role to access those accounts.
+
+Role will grant following permissions to get access resources on remote accounts.
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "dsql:ListClusters",
+                "dsql:ListTagsForResource",
+                "dsql:GetCluster",
+                "cloudwatch:GetMetricData"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
 
 - #### Using AWS CLI 
 
