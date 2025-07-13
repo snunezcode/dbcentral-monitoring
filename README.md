@@ -1,6 +1,11 @@
 # DBCentral Monitoring Solution for AWS Database Services
 
-> **Disclaimer:** The sample code; software libraries; command line tools; proofs of concept; templates; or other related technology (including any of the foregoing that are provided by our personnel) is provided to you as AWS Content under the AWS Customer Agreement, or the relevant written agreement between you and AWS (whichever applies). You are responsible for testing, securing, and optimizing the AWS Content, such as sample code, as appropriate for production grade use based on your specific quality control practices and standards. Deploying AWS Content may incur AWS charges for creating or using AWS chargeable resources, such as running Amazon App Runner, using Cognito, API Gateway, Aurora DSQL, Lambda, S3.
+> **Disclaimer:** This code is provided as reference code only and is intended for educational, demonstration, and learning purposes. It is not intended for direct production use without proper review, testing, and modification to meet your specific requirements and security standards. You are responsible for testing, securing, and optimizing the AWS Content, such as sample code, as appropriate for production grade use based on your specific quality control practices and standards. Deploying AWS Content may incur AWS charges for creating or using AWS chargeable resources, such as running Amazon App Runner, Cognito, DynamoDB.
+
+
+## Content
+[Solution Deployment](#section-solution-deployment)
+
 
 
 ## What is DBCentral Monitoring Solution ?
@@ -134,7 +139,7 @@ Key Components:
 
 
  
-
+<a name="section-solution-deployment"></a>
 ## Solution Deployment
 
 > **Time to deploy:** Approximately 10 minutes.
