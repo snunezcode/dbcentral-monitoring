@@ -154,10 +154,10 @@ Key Components:
 
 This deployment procedure consists of two main components:
 
-- Application Deployment: Deploy the application infrastructure (public or private)
+- Application: Deploy the application infrastructure (public or private)
     - [4.1 Public Option](#section-4-1)
     - [4.2 Private option](#section-4-1)
-- IAM Role Configuration: Create and configure IAM roles for remote accounts to enable cross-account observability when required, this can be done using AWS CLI or AWS Cloudformantion.
+- IAM Role: Create and configure IAM roles for remote accounts to enable cross-account observability when is required, this can be done using AWS CLI or AWS Cloudformantion.
     - [4.3.1 Using AWS CLI](#section-4-1)
     - [4.3.2  Using Cloudformation template](#section-4-1) 
 
