@@ -4,17 +4,21 @@
 
 
 ## Content
-[Solution Deployment](#section-solution-deployment)
+[1.- What is DBCentral Monitoring Solution ?](#section-1)
+[2.- How looks like ?](#section-2)
+[3.- Architecture and Deployment Options](#section-3)
+[4.- Solution Deployment](#section-4)
 
 
 
-## What is DBCentral Monitoring Solution ?
+<a name="section-1"></a>
+## 1.- What is DBCentral Monitoring Solution ?
 
 DBCentral Monitoring Solution is a unified observability platform that consolidates monitoring for all your AWS database services into a single, powerful interface. It seamlessly integrates CloudWatch metrics with AWS metadata across multiple regions and accounts, providing comprehensive visibility that eliminates blind spots and reduces complexity. Unlike traditional monitoring approaches that require constant console-switching, DBCentral delivers real-time insights that enable your teams to proactively identify performance issues, optimize database operations, and maintain peak efficiency—all through one centralized monitoring hub designed specifically for AWS database environment
 
 
 
-## Key features
+### Key features
 
 - Complete Database Visibility - See all your database instances and clusters at once with simple dashboards that combine metrics and performance data in clear, meaningful displays.
 
@@ -25,7 +29,7 @@ DBCentral Monitoring Solution is a unified observability platform that consolida
 - Smart Performance Visualization - Evaluate database health at a glance with our thoughtfully designed UI that presents key performance metrics in a clear, intuitive format for faster analysis and decision-making.
 
 
-## Use cases
+### Use cases
 
 - #### Rapid Incident Response
 When performance degrades, quickly pinpoint whether the issue lies in your database, network, or application layer. DBCentral Monitoring consolidates critical metrics on one screen, reducing troubleshooting time.
@@ -40,7 +44,8 @@ Break down monitoring silos with our single-pane view of databases spanning mult
 Monitor your entire database fleet regardless of AWS account boundaries. Gain comprehensive visibility across development, testing, and production environments in one unified interface, eliminating blind spots and providing complete organizational database awareness.
 
 
-## How looks like ?
+<a name="section-2"></a>
+## 2.- How looks like ?
 
 
 #### Home
@@ -54,8 +59,8 @@ Monitor your entire database fleet regardless of AWS account boundaries. Gain co
 
 
 
-
-## Architecture and Deployment Options
+<a name="section-3"></a>
+## 3.- Architecture and Deployment Options
 
 ### Private Deployment Architecture
 
@@ -139,12 +144,12 @@ Key Components:
 
 
  
-<a name="section-solution-deployment"></a>
-## Solution Deployment
+<a name="section-4"></a>
+## 4.- Solution Deployment
 
 > **Time to deploy:** Approximately 10 minutes.
 
-### Public method access version
+### 4.1 Public method access version
 
 
 Follow these step-by-step instructions to configure and deploy the DBCentral Monitoring Solution into your AWS account using CloudFormation.
@@ -206,7 +211,7 @@ Follow these step-by-step instructions to configure and deploy the DBCentral Mon
 
 
 
-### Private method access version
+### 4.2 Private method access version
 
 
 Follow these step-by-step instructions to configure and deploy the DBCentral Monitoring Solution into your AWS account using CloudFormation.
@@ -278,7 +283,7 @@ Follow these step-by-step instructions to configure and deploy the DBCentral Mon
 
 
 
-## IAM Role Deployment
+### 4.3 IAM Role Deployment
 
 If the monitoring process needs to be performed across multiple AWS accounts (which is the most common scenario), you will need to deploy a cross-account IAM role to access those accounts.
 
@@ -304,7 +309,7 @@ Role will grant following permissions to get access resources on remote accounts
 ```
 
 
-- #### Using AWS CLI 
+- #### 4.3.1 Using AWS CLI 
 
 This approach will create this role using AWS CLI on your target account to be monitored.
 
@@ -315,7 +320,7 @@ aws iam create-role --role-name IAMRoleDBCentralSolution --assume-role-policy-do
 
 
 
-- #### Using Cloudformation template
+- #### 4.3.2 Using Cloudformation template
 
 This approach will deploy this role as an AWS CloudFormation StackSet from your management account.
 
