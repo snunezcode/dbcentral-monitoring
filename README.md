@@ -152,7 +152,18 @@ Key Components:
 
 > **Time to deploy:** Approximately 10 minutes.
 
-### 4.1 Public deployment
+This deployment procedure consists of two main components:
+
+- Application Deployment: Deploy the application infrastructure (public or private)
+    - [4.1 Public Option](#section-4-1)
+    - [4.2 Private option](#section-4-1)
+- IAM Role Configuration: Create and configure IAM roles for remote accounts to enable cross-account observability when required, this can be done using AWS CLI or AWS Cloudformantion.
+    - [4.3.1 Using AWS CLI](#section-4-1)
+    - [4.3.2  Using Cloudformation template](#section-4-1) 
+
+
+<a name="section-4-1"></a>
+### 4.1 Public Option
 
 
 Follow these step-by-step instructions to configure and deploy the DBCentral Monitoring Solution into your AWS account using CloudFormation.
@@ -214,7 +225,8 @@ Follow these step-by-step instructions to configure and deploy the DBCentral Mon
 
 
 
-### 4.2 Private deployment
+<a name="section-4-2"></a>
+### 4.2 Private Option
 
 
 Follow these step-by-step instructions to configure and deploy the DBCentral Monitoring Solution into your AWS account using CloudFormation.
@@ -311,7 +323,7 @@ Role will grant following permissions to get access resources on remote accounts
 }
 ```
 
-
+<a name="section-4-3-1"></a>
 - #### 4.3.1 Using AWS CLI 
 
 This approach will create this role using AWS CLI on your target account to be monitored.
@@ -323,6 +335,7 @@ aws iam create-role --role-name IAMRoleDBCentralSolution --assume-role-policy-do
 
 
 
+<a name="section-4-3-2"></a>
 - #### 4.3.2 Using Cloudformation template
 
 This approach will deploy this role as an AWS CloudFormation StackSet from your management account.
