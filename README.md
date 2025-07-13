@@ -1,6 +1,6 @@
 # DBCentral Monitoring Solution for AWS Database Services
 
-> **Disclaimer:** This code is provided as reference code only and is intended for educational, demonstration, and learning purposes. It is not intended for direct production use without proper review, testing, and modification to meet your specific requirements and security standards. You are responsible for testing, securing, and optimizing the AWS Content, such as sample code, as appropriate for production grade use based on your specific quality control practices and standards. Deploying AWS Content may incur AWS charges for creating or using AWS chargeable resources, such as running Amazon App Runner, Cognito, DynamoDB.
+> **Disclaimer:** This code is provided as reference code only and is intended for educational, demonstration, and learning purposes. It is not intended for direct production use without proper review, testing, and modification to meet your specific requirements and security standards. You are responsible for testing, securing, and optimizing the AWS Content, such as sample code, as appropriate for production grade use based on your specific quality control practices and standards. Deploying AWS Content may incur AWS charges for creating or using AWS chargeable resources, such as running Amazon App Runner, Cognito, Cloudwatch, DynamoDB.
 
 
 ## Content
@@ -8,7 +8,7 @@
 - [2.- How looks like ?](#section-2)
 - [3.- Architecture and Deployment Options](#section-3)
 - [4.- Solution Deployment](#section-4)
-
+- [5.- Cost and Pricing](#section-5)
 
 
 <a name="section-1"></a>
@@ -363,6 +363,33 @@ Note: Since this CloudFormation StackSet only deploys an IAM role, which is a gl
 17.	Select the I acknowledge that AWS CloudFormation might create IAM resources with custom names checkbox.
 18.	Click Submit.
 
+
+
+<a name="section-5"></a>
+## 5.- Cost & Pricing
+
+
+### AWS Apps Runner
+- Daily compute resources used to process requests
+    - 8 hrs × 1 active container instance × [(1 vCPU × $0.064 vCPU-hour) + (2 GB × $0.007 GB-hour)] - 8 hrs x 1 provisioned container instance x (2 GB × $0.007 GB-hour) = $0.51
+
+- Daily provisioned container instance fee
+    - 24 hrs × 1 provisioned container instance × (2 GB × $0.007 GB-hour) = $0.34
+
+- Total daily cost
+    - Total compute resources ($0.51) + provisioned container instance ($0.34) = $0.85
+
+- Total monthly cost
+    - Total daily cost ($0.85) × 30 days = $25.50
+
+
+### AWS Cognito
+- Basic feature used by this solution of Cognito is under free tier.
+
+
+### AWS Cloudwatch
+- Cost will depend how much this applicaition is used and how many resources are being actively monitoring. 
+    - GetMetricData call price is $0.01 per 1,000 metrics requested. Cluster monitoring will gather 15 metrics per call every 20 seconds. 15 metrics x 3 ( 20 second x 3 = minute) = 45 metrics per minute x 60 = 2,700 metrics. 2,700 / 1,000 = 2.7 * $0.01 = 0.027 DLS per cluster per hour. 
 
 
 
