@@ -156,10 +156,10 @@ This deployment procedure consists of two main components:
 
 - Application: Deploy the application infrastructure (public or private)
     - [4.1 Public Option](#section-4-1)
-    - [4.2 Private option](#section-4-1)
+    - [4.2 Private option](#section-4-2)
 - IAM Role: Create and configure IAM roles for remote accounts to enable cross-account observability when is required, this can be done using AWS CLI or AWS Cloudformantion.
-    - [4.3.1 Using AWS CLI](#section-4-1)
-    - [4.3.2  Using Cloudformation template](#section-4-1) 
+    - [4.3.1 Using AWS CLI](#section-4-3-1)
+    - [4.3.2  Using Cloudformation template](#section-4-3-2) 
 
 
 <a name="section-4-1"></a>
