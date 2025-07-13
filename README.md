@@ -65,7 +65,7 @@ Monitor your entire database fleet regardless of AWS account boundaries. Gain co
 <a name="section-3"></a>
 ## 3.- Architecture and Deployment Options
 
-### Private deployment
+### 3.1 Private deployment
 
 <img width="1089" alt="image" src="frontend/src/img/architecture-private.png">
 
@@ -105,7 +105,7 @@ Key Components:
 - Suitable for sensitive environments and regulated industries
 
 
-### Public deployment 
+### 3.2 Public deployment 
 
 <img width="1089" alt="image" src="frontend/src/img/architecture-public.png">
 
