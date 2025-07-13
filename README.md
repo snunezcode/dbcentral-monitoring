@@ -4,10 +4,10 @@
 
 
 ## Content
-[1.- What is DBCentral Monitoring Solution ?](#section-1)
-[2.- How looks like ?](#section-2)
-[3.- Architecture and Deployment Options](#section-3)
-[4.- Solution Deployment](#section-4)
+- [1.- What is DBCentral Monitoring Solution ?](#section-1)
+- [2.- How looks like ?](#section-2)
+- [3.- Architecture and Deployment Options](#section-3)
+- [4.- Solution Deployment](#section-4)
 
 
 
