@@ -62,7 +62,7 @@ Monitor your entire database fleet regardless of AWS account boundaries. Gain co
 <a name="section-3"></a>
 ## 3.- Architecture and Deployment Options
 
-### Private Deployment Architecture
+### Private deployment
 
 <img width="1089" alt="image" src="frontend/src/img/architecture-private.png">
 
@@ -102,7 +102,7 @@ Key Components:
 - Suitable for sensitive environments and regulated industries
 
 
-### Public Deployment Architecture
+### Public deployment 
 
 <img width="1089" alt="image" src="frontend/src/img/architecture-public.png">
 
@@ -149,7 +149,7 @@ Key Components:
 
 > **Time to deploy:** Approximately 10 minutes.
 
-### 4.1 Public method access version
+### 4.1 Public deployment
 
 
 Follow these step-by-step instructions to configure and deploy the DBCentral Monitoring Solution into your AWS account using CloudFormation.
@@ -211,7 +211,7 @@ Follow these step-by-step instructions to configure and deploy the DBCentral Mon
 
 
 
-### 4.2 Private method access version
+### 4.2 Private deployment
 
 
 Follow these step-by-step instructions to configure and deploy the DBCentral Monitoring Solution into your AWS account using CloudFormation.
