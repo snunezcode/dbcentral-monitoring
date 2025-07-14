@@ -166,7 +166,7 @@ The deployment procedure consists of two main components:
 
 Follow these step-by-step instructions to configure and deploy the DBCentral Monitoring Solution into your AWS account using CloudFormation.
 
-1. Download clodformation template ([cloudformation.public.yaml](https://raw.githubusercontent.com/aws-samples/sample-dbcentral-solution/refs/heads/main/cloudformation.public.yaml))
+1. Download clodformation template ([cloudformation.public.yaml](https://raw.githubusercontent.com/aws-samples/sample-dbcentral-solution/refs/heads/main/conf/cloudformation.public.yaml))
     
 2. Sign in to the AWS Management Console
     - Navigate to the AWS Console (https://console.aws.amazon.com )
@@ -230,7 +230,7 @@ Follow these step-by-step instructions to configure and deploy the DBCentral Mon
 Follow these step-by-step instructions to configure and deploy the DBCentral Monitoring Solution into your AWS account using CloudFormation.
 
 
-1. Download clodformation template ([cloudformation.private.yaml](https://raw.githubusercontent.com/aws-samples/sample-dbcentral-solution/refs/heads/main/cloudformation.private.yaml))
+1. Download clodformation template ([cloudformation.private.yaml](https://raw.githubusercontent.com/aws-samples/sample-dbcentral-solution/refs/heads/main/conf/cloudformation.private.yaml))
 
 2. Sign in to the AWS Management Console
     - Navigate to the AWS Console (https://console.aws.amazon.com )
@@ -338,7 +338,7 @@ aws iam create-role --role-name IAMRoleDBCentralSolution --assume-role-policy-do
 
 This approach will deploy this role as an AWS CloudFormation StackSet from your management account.
 
-1. Download clodformation template ([cloudformation.iam.role.yaml](https://raw.githubusercontent.com/aws-samples/sample-dbcentral-solution/refs/heads/main/cloudformation.iam.role.yaml))
+1. Download clodformation template ([cloudformation.iam.role.yaml](https://raw.githubusercontent.com/aws-samples/sample-dbcentral-solution/refs/heads/main/conf/cloudformation.iam.role.yaml))
 
 2.	Sign in to the AWS Management Console.
 3.	Navigate to the AWS CloudFormation service.
