@@ -161,7 +161,7 @@ Key Components:
 
 > **Time to deploy:** Approximately 10 minutes.
 
-This deployment procedure consists of two main components:
+The deployment procedure consists of two main components:
 
 - Application: Deploy the application infrastructure (public or private)
     - [4.1 Public Option](#section-4-1)
