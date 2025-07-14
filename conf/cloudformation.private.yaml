@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'CloudFormation template to build frontend for DBCentral Monitoring Solution'
+Description: 'DBCentral Monitoring Solution - Private Option (uksb-fclfjp5a7h)'
 
 Metadata: 
   AWS::CloudFormation::Interface: 
