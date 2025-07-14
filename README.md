@@ -14,7 +14,7 @@
 <a name="section-1"></a>
 ## 1.- What is DBCentral Monitoring Solution ?
 
-DBCentral Monitoring Solution is a unified observability platform that consolidates monitoring for all your AWS database services into a single, powerful interface. It seamlessly integrates CloudWatch metrics with AWS metadata across multiple regions and accounts, providing comprehensive visibility that eliminates blind spots and reduces complexity. Unlike traditional monitoring approaches that require constant console-switching, DBCentral delivers real-time insights that enable your teams to proactively identify performance issues, optimize database operations, and maintain peak efficiency—all through one centralized monitoring hub designed specifically for AWS database environment
+DBCentral Monitoring Solution is an open source initiative, this solition unify observability platform that consolidates monitoring for all your AWS database services into a single, powerful interface. It seamlessly integrates CloudWatch metrics with AWS metadata across multiple regions and accounts, providing comprehensive visibility that eliminates blind spots and reduces complexity. Unlike traditional monitoring approaches that require constant console-switching, DBCentral delivers real-time insights that enable your teams to proactively identify performance issues, optimize database operations, and maintain peak efficiency—all through one centralized monitoring hub designed specifically for AWS database environment
 
 
 
@@ -42,6 +42,15 @@ Break down monitoring silos with our single-pane view of databases spanning mult
 
 - #### Cross-Account Observability
 Monitor your entire database fleet regardless of AWS account boundaries. Gain comprehensive visibility across development, testing, and production environments in one unified interface, eliminating blind spots and providing complete organizational database awareness.
+
+### Database engines supported
+
+- Amazon Aurora DSQL
+- Amazon DynamoDB (Coming Soon)
+- Amazon MemoryDB & Elasticache (Coming Soon) 
+- Amazon Aurora MySQL-Compatible & PostgreSQL-Compatible Edition (Coming Soon)
+- Amazon DocumentDB (Coming Soon)
+
 
 
 <a name="section-2"></a>
