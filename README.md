@@ -389,7 +389,7 @@ Note: Since this CloudFormation StackSet only deploys an IAM role, which is a gl
 
 ### AWS Cloudwatch
 - Cost will depend how much this applicaition is used and how many resources are being actively monitoring. 
-    - GetMetricData call price is $0.01 per 1,000 metrics requested. Cluster monitoring will gather 15 metrics per call every 20 seconds. 15 metrics x 3 ( 20 second x 3 = minute) = 45 metrics per minute x 60 = 2,700 metrics. 2,700 / 1,000 = 2.7 * $0.01 = 0.027 DLS per cluster per hour. 
+    - GetMetricData call price is $0.01 per 1,000 metrics requested. Cluster monitoring will gather 15 metrics per call every 20 seconds. 15 metrics x 3 ( 20 seconds x 3 = 1 minute) = 45 metrics per minute x 60 = 2,700 metrics per hour. 2,700 / 1,000 = 2.7 * $0.01 = 0.027 DLS per cluster per hour. 
 
 
 
