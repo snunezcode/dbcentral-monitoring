@@ -58,18 +58,7 @@ Monitor your entire database fleet regardless of AWS account boundaries. Gain co
 
 
 #### Home
-<img width="1089" alt="image" src="img/im001.png">
-
-#### Dashboard - Amazon Aurora DSQL
-<img width="1089" alt="image" src="img/im002.png">
-
-#### Cross Region Dashboard - Amazon Aurora DSQL
-<img width="1089" alt="image" src="img/im003.png">
-
-#### Cross Region Dashboard - Metric comparation - Amazon Aurora DSQL
-<img width="1089" alt="image" src="img/im004.png">
-
-
+<img width="1089" alt="image" src="img/dbcentral-monitoring-demo.gif">
 
 <a name="section-3"></a>
 ## 3.- Architecture and Deployment Options
