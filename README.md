@@ -330,7 +330,7 @@ This approach will create this role using AWS CLI on your target account to be m
 
 Note : Update <YOUR-CENTRAL-DEPLOYMENT-ACCOUNT> with your central account where application was deployed.
 ```bash
-aws iam create-role --role-name IAMRoleDBCentralSolution --assume-role-policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"AWS":"arn:aws:iam::<YOUR-CENTRAL-DEPLOYMENT-ACCOUNT>:role/role-ec2-aws-showtime-labs"},"Action":"sts:AssumeRole"}]}' && aws iam put-role-policy --role-name IAMRoleDBCentralSolution --policy-name policy-dbcentral --policy-document '{"Version":"2012-10-17","Statement":[{"Sid":"VisualEditor0","Effect":"Allow","Action":["dsql:ListClusters","dsql:ListTagsForResource","dsql:GetCluster","cloudwatch:GetMetricData"],"Resource":"*"}]}'
+aws iam create-role --role-name IAMRoleDBCentralSolution --assume-role-policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"AWS":"arn:aws:iam::<YOUR-CENTRAL-DEPLOYMENT-ACCOUNT>:role/IAMRoleDBCentralSolutionOrigin"},"Action":"sts:AssumeRole"}]}' && aws iam put-role-policy --role-name IAMRoleDBCentralSolution --policy-name policy-dbcentral --policy-document '{"Version":"2012-10-17","Statement":[{"Sid":"VisualEditor0","Effect":"Allow","Action":["dsql:ListClusters","dsql:ListTagsForResource","dsql:GetCluster","cloudwatch:GetMetricData"],"Resource":"*"}]}'
 ```
 
 
