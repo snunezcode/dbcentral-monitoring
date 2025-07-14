@@ -57,7 +57,7 @@ Monitor your entire database fleet regardless of AWS account boundaries. Gain co
 ## 2.- How looks like ?
 
 
-#### Home
+#### DBCentral Solution for Amazon Aurora DSQL
 <img width="1089" alt="image" src="img/dbcentral-monitoring-demo.gif">
 
 <a name="section-3"></a>
